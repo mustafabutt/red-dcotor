@@ -73,11 +73,11 @@ export class DoctorService {
         return await this.feedbackModal.findByIdAndRemove(id);
     }
     async readDoctors(): Promise<Doctor[]> {
-        return await this.doctorModal.find({},{'__v': 0}).exec();
+        return await this.doctorModal.find({}).select({'firstName':1, 'lastName':1, 'expertise':1, 'qualification':1, 'fees':1, 'waitTime':1}).exec();
         
     }
     async readSingleDoctor(id): Promise<any> {
-        return await this.doctorModal.findById(id,{'__v': 0}).exec();
+        return (await (await this.doctorModal.findById(id,{'__v': 0})).populate('feedback',{'comments':1,'rating':1,'_id':0})).populate('doctorTiming.location',{'hospital':1,'_id':0});
        
     }
     async updateDoctor(id: string,doctor: Doctor): Promise<Doctor> {

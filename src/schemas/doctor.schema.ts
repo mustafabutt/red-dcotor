@@ -7,6 +7,23 @@ import { Appointment } from './appointment.schema';
 export type DoctorDocument = Doctor & Document;
 
 @Schema()
+class TimeSlots{
+  day: string;
+  @Prop({ required: true})
+  start_time: string;
+  @Prop({ required: true})
+  end_time: string;
+}
+
+@Schema()
+class DoctorLocations{
+  @Prop({ type: [String],ref: 'Location' })
+  locations: Location[]
+  @Prop({ required: true})
+  timing: TimeSlots
+}
+
+@Schema()
 export class Doctor {
   @Prop({ required: true})
   firstName: string;
@@ -27,19 +44,19 @@ export class Doctor {
   expertise: string;
 
   @Prop({ required: true })
-  waitTime: string;
+  qualification: string;
 
   @Prop({ required: true })
-  availability: [];
+  waitTime: string;
 
-  @Prop({ type: [String],ref: 'Location' })
-  locations: Location[]
+  @Prop({ required: true, ref: 'Location' })
+  doctorTiming: [{location:Location}];
 
   @Prop({ type: [String],ref: 'Appointment' })
   appointments: Appointment[]
 
-  @Prop({ type: String,ref: 'Feedback', default:null})
-  feedback: Feedback
+  @Prop({ type: [String],ref: 'Feedback', default:null})
+  feedback: Feedback[]
   
   @Prop({ required: false })
   createdBy: string;

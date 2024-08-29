@@ -1,7 +1,9 @@
 'use server'
 import { redirect } from 'next/navigation';
-// import { signIn } from '@/auth'
- 
+import { cookies } from "next/headers";
+import { formDataToJson } from '@/utilz/utils';
+import { revalidatePath } from 'next/cache'
+
 export async function authenticate(_currentState: unknown, formData: FormData) {
   try {
     // await signIn('credentials', formData)
@@ -21,3 +23,17 @@ export async function authenticate(_currentState: unknown, formData: FormData) {
     throw error
   }
 }
+
+export async function fetchDoctorList() {
+  const res = await fetch("http://localhost:3001/doctor", {
+      method: 'GET',
+      headers: {
+          "Content-Type": "application/json",
+          "Authorization":"Bearer "+cookies().get('access_token')?.value
+      },
+  });
+  const data = await res.json();
+  return data;
+}
+
+

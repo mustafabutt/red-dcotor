@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import {  Doctor } from './doctor.schema';
+import {  User } from './users.schema';
 
 export type FeedbackDocument = Feedback & Document;
 
@@ -15,6 +16,9 @@ export class Feedback {
 
   @Prop({  type: String,ref: 'Doctor'})
   doctor: Doctor;
+
+  @Prop({ type:String, ref:'User' })
+  givenBy: User;
 
 }
 

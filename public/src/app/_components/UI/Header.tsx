@@ -23,6 +23,7 @@ const Header = () => {
     // router.push("/profile");
   }
   const[theme] = useContext(ThemeContext);
+  // const theme = "bg-black border-2 border-white-600"
   const adminDashboard  = async () => {
     // router.push("/dashboard");
   }
@@ -39,7 +40,7 @@ const Header = () => {
  
   return (
     <> 
-      <div className={'flex justify-between items-center w-full h-20 px-4 fixed nav '+theme} >
+      <div className={'flex justify-between items-center w-full h-20 px-4 fixed nav shadow-xl shadow-2xl shadow-lg shadow-md '+theme} >
         <div>
           <h1 className="text-5xl font-signature ml-2">
             Red Doctor
@@ -61,8 +62,8 @@ const Header = () => {
         
         </div>
         
-        {status == "authenticated" ?<button onClick={logOut} className=" bg-black-400 rounded-lg p-2 mt-3 text-light bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Sign out</button> :null}
-      
+        {status == "authenticated" ? <button onClick={logOut}  className={theme == "bg-white border-2 border-black-600"? "items-center ml-auto inline-flex bg-black rounded-lg p-2 text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800":" items-center inline-flex ml-auto bg-white rounded-lg p-2 text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"}>Sign out</button>:null}
+
           <ThemeToggle />
         <div
           onClick={() => setNav(!nav)}

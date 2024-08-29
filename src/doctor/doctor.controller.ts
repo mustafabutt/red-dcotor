@@ -34,7 +34,7 @@ export class DoctorController {
     ) {}
 
     @Post()
-    async createUser(@Res() response, @Body() doctor: Doctor) {
+    async createDoctor(@Res() response, @Body() doctor: Doctor) {
         try {
         const newDoctor = await this.doctorService.createDoctor(doctor)
         return response.status(HttpStatus.CREATED).json(
@@ -48,11 +48,14 @@ export class DoctorController {
     @Get()
     async fetchAll(@Res() response) {
       try {
-        const data = await this.doctorService.readDoctors();
-    
-        return response.status(HttpStatus.OK).json(
-          data
-        );
+        // setTimeout(async ()=>{
+          const data = await this.doctorService.readDoctors();
+      
+          return response.status(HttpStatus.OK).json(
+            data
+          );
+        // },2000)
+       
       } catch (err) {
         this.exceptions.generateGeneralException(err);
       }
@@ -125,5 +128,4 @@ export class DoctorController {
         this.exceptions.generateGeneralException(err);
       }
     }
-
 }

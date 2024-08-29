@@ -36,6 +36,7 @@ export class LocationController {
     @Post()
     async createLocation(@Res() response, @Body() location: Location) {
       try {
+       
         const newLocation = await this.doctorService.createLocation(location);
         await this.doctorService.addLocationsInDoctor(newLocation);
 
@@ -49,7 +50,7 @@ export class LocationController {
     @Get()
     async fetchAll(@Res() response, @Req() request: Request) {
       try {
-        console.log("yes i am in,,...");
+        console.log("yes i am in 1,,...");
         console.log(request.cookies);
         const data = await this.doctorService.readLocations();
         return response.status(HttpStatus.OK).json(

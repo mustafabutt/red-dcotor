@@ -3,16 +3,23 @@ import { ThemeContext } from '@/context/ThemeContext';
 
 const ThemeToggle = () => {
   const [isChecked, setIsChecked] = useState(false);
-  const [theme, setTheme] = useContext(ThemeContext);
+  const [isMounted, setIsMounted] = useState(false);
+  let [theme, setTheme] = useContext(ThemeContext);
 
+  if(!theme)
+    theme = "bg-white border-2 border-black-600"
   const handleCheckboxChange = () => {
     setTheme(theme == "bg-white border-2 border-black-600" ? "bg-black border-2 border-white-600":"bg-white border-2 border-black-600");
     setIsChecked(!isChecked)
   }
   useEffect(()=>{
-    localStorage.setItem("theme",theme);
+    setIsMounted(true);
+    setTheme(localStorage.getItem("theme"));
     setIsChecked(localStorage.getItem("theme")=="bg-black border-2 border-white-600"?true:false);
   })
+  
+if(isMounted)
+  localStorage.setItem("theme",theme);
 
   return (
     <>

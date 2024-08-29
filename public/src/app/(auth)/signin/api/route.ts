@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 
 export async function POST(request: Request, response:Response) {
-  console.log("netflix 888")
+  
   const credentials = {
     email: "test@gmail.com",
     password: 'qwerty',

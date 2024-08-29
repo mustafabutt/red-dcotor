@@ -1,4 +1,3 @@
- 
 import { NextApiRequest, NextApiResponse } from 'next'
 import NextAuth, { DefaultSession } from 'next-auth'
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -21,31 +20,27 @@ const handler = NextAuth({
         name: 'Credentials',
         credentials: {},
         async authorize(credentials, _req) {
-            
           try {
-     
             const {data,error}:any = await axios.post("http://localhost:3001/auth/login", credentials)
-
             cookies().set({
                 name: 'access_token',
                 value: data.access_token,
                 maxAge: 86400,
                 httpOnly: false,
+                secure: false,
             });
-      
+       
             if (error) 
               return error       
             return await data
           } catch (error) {
-           
             throw new Error(JSON.stringify(error.response.data));
-
           }
         },
       }), 
   ]
   ,
-  session: { strategy: "jwt",       maxAge: 86400 },
+  session: { strategy: "jwt",  maxAge: 86400 },
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async jwt({ token, user, account }) {
@@ -56,20 +51,14 @@ const handler = NextAuth({
       return {...session, ...token}
     },
     async signIn({account, profile}) {
-      
+ 
       if(account.provider === 'google') {
-        console.log("opop4");
-        console.log(account)
         const credentials = {
           email: profile.email,
           password: 'qwerty',
           gender:"male"
         };
-        console.log("lol99");
-        console.log(credentials)
         const {data,error}:any = await axios.post("http://localhost:3001/auth/login", credentials);
-        console.log("lolo78");
-        console.log(data);
         cookies().set({
             name: 'access_token',
             value: data.access_token,

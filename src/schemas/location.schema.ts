@@ -17,7 +17,7 @@ export class Location {
   postCode: string;
 
   @Prop({ required: true})
-  building: string;
+  hospital: string;
 
   @Prop({ type: [String],ref: 'Doctor' })
   doctors: Doctor[]
