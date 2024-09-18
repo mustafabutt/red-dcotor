@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Feedback, FeedbackDocument } from 'src/schemas/feedback.schema';
@@ -6,16 +6,26 @@ import { Doctor, DoctorDocument } from 'src/schemas/doctor.schema';
 import { Location, LocationDocument } from 'src/schemas/location.schema';
 import { Appointment, AppointmentDocument } from 'src/schemas/appointment.schema';
 import { User, UserDocument } from 'src/schemas/users.schema';
+import { filterDoctorsbyCity, removeEmptyLocation, generateSlots } from 'src/utils/utils';
 
 @Injectable()
 export class DoctorService {
+    private readonly logger = new Logger(DoctorService.name);
     constructor(
         @InjectModel(Feedback.name) private feedbackModal: Model<FeedbackDocument>,
         @InjectModel(Doctor.name) private doctorModal: Model<DoctorDocument>,
         @InjectModel(Location.name) private locationModal: Model<LocationDocument>,
         @InjectModel(Appointment.name) private appointmentModal: Model<AppointmentDocument>,
         @InjectModel(User.name) private userModal: Model<UserDocument>
-    ) {}
+        
+    ) {
+        this.logger.log('DoctorService initialized.');
+    }
+
+    async getAvailableSlots(doctor): Promise<any> {
+      
+        // this.logger.log(timing);
+    }
 
     async createFeedback(feedback: Feedback): Promise<Feedback> {
         const newFeedback = new this.feedbackModal(feedback);
@@ -72,12 +82,34 @@ export class DoctorService {
     async deleteFeedback(id): Promise<any> {
         return await this.feedbackModal.findByIdAndRemove(id);
     }
-    async readDoctors(): Promise<Doctor[]> {
-        return await this.doctorModal.find({}).select({'firstName':1, 'lastName':1, 'expertise':1, 'qualification':1, 'fees':1, 'waitTime':1}).exec();
+    async readDoctors(query): Promise<any> {
+
+        if(Object.keys(query).length > 0){
+            const doctors = await this.doctorModal.find().select({'firstName':1,'doctorTiming':1, 'lastName':1, 'expertise':1, 'qualification':1, 'fees':1, 'waitTime':1}).populate({
+                path: 'doctorTiming.location',  
+                select: { hospital: 1, city: 1, _id: 0 },  
+                match: { city: { $eq: query.city } }, 
+              }).exec();
+            let DoctorsbyCity = await filterDoctorsbyCity(doctors, query.city);
+            return await removeEmptyLocation(DoctorsbyCity)
+        }   
+        else return await this.doctorModal.find({}).select({'firstName':1, 'lastName':1, 'expertise':1, 'qualification':1, 'fees':1, 'waitTime':1}).exec();     
         
     }
-    async readSingleDoctor(id): Promise<any> {
-        return (await (await this.doctorModal.findById(id,{'__v': 0})).populate('feedback',{'comments':1,'rating':1,'_id':0})).populate('doctorTiming.location',{'hospital':1,'_id':0});
+    async readSingleDoctor(id, query): Promise<any> {
+        if(Object.keys(query).length > 0){
+            const doctor = await this.doctorModal.findById(id,{'__v': 0}).populate('feedback',{'comments':1,'rating':1,'_id':0}).populate({
+                path: 'doctorTiming.location',  
+                select: { hospital: 1, city: 1, _id: 0 },  
+                match: { city: { $eq: query.city } }, 
+              }).exec();
+              let arr = [];
+              arr.push(doctor)
+            let DoctorbyCity = await filterDoctorsbyCity(arr, query.city)
+            const finalData = await removeEmptyLocation(DoctorbyCity)[0];
+            await generateSlots(finalData.doctorTiming);
+            return finalData;
+        }else return await this.doctorModal.findById(id,{'__v': 0}).populate('feedback',{'comments':1,'rating':1,'_id':0}).populate('doctorTiming.location',{'hospital':1,'_id':0,'city':1});
        
     }
     async updateDoctor(id: string,doctor: Doctor): Promise<Doctor> {
@@ -162,3 +194,123 @@ export class DoctorService {
         return await this.feedbackModal.findOne({ 'doctor': id},{'__v':0}).exec();
     }
 }
+
+
+// [{
+//     "_id": "66dee523c29e567261d0ffce",
+//     "firstName": "Husna",
+//     "lastName": "Khan",
+//     "email": "hus@gmail.com",
+//     "age": 4500,
+//     "fees": 1200,
+//     "expertise": "Physio",
+//     "qualification": "PU Lahore (Silver MEDALIST)",
+//     "waitTime": "1 hours",
+//     "doctorTiming": [
+//         {
+//             "location": [
+//                 {
+//                     "city": "sialkot",
+//                     "hospital": "kiran international"
+//                 }
+//             ],
+//             "timing": [
+//                 {
+//                     "day": "Mon",
+//                     "start_time": "09:00 AM",
+//                     "end_time": "12:00 PM"
+//                 }
+//             ]
+//         },
+//         {
+//             "location": [
+//                 {
+//                     "city": "lahore",
+//                     "hospital": "Ahad Hospital"
+//                 }
+//             ],
+//             "timing": [
+//                 {
+//                     "day": "Wed",
+//                     "start_time": "12:00 PM",
+//                     "end_time": "10:00 PM"
+//                 },
+//                 {
+//                     "day": "Sun",
+//                     "start_time": "11:00 PM",
+//                     "end_time": "10:00 PM"
+//                 }
+//             ]
+//         }
+//     ],
+//     "appointments": [],
+//     "feedback": []
+// },
+// {
+//     "_id": "66dee416c29e567261d0ffc8",
+//     "firstName": "idrees",
+//     "lastName": "khan",
+//     "email": "amir@gmail.com",
+//     "age": 55,
+//     "fees": 2000,
+//     "expertise": "Idrees Specialist",
+//     "qualification": "MBBS (GOLD MEDALIST)",
+//     "waitTime": "2 hours",
+//     "doctorTiming": [
+//         {
+//             "location": [
+//                 {
+//                     "city": "sialkot",
+//                     "hospital": "kiran international"
+//                 }
+//             ],
+//             "timing": [
+//                 {
+//                     "day": "Mon",
+//                     "start_time": "09:00 AM",
+//                     "end_time": "12:00 PM"
+//                 }
+//             ]
+//         }
+//     ],
+//     "appointments": [
+//         "66c2418e564a96898773a00a"
+//     ],
+//     "feedback": [
+//         {
+//             "comments": "highly recomended plus+",
+//             "rating": "5"
+//         }
+//     ]
+// },
+// {
+//     "_id": "66dee49ec29e567261d0ffca",
+//     "firstName": "Lal",
+//     "lastName": "Badshah",
+//     "email": "rahim@gmail.com",
+//     "age": 45,
+//     "fees": 2500,
+//     "expertise": "Medicine Specialist",
+//     "qualification": "King Edward (GOLD MEDALIST)",
+//     "waitTime": "2 hours",
+//     "doctorTiming": [
+//         {
+//             "location": [
+//                 {
+//                     "city": "lahore",
+//                     "hospital": "Ahad Hospital"
+//                 }
+//             ],
+//             "timing": [
+//                 {
+//                     "day": "Tue",
+//                     "start_time": "12:00 PM",
+//                     "end_time": "10:00 PM"
+//                 }
+//             ]
+//         }
+//     ],
+//     "appointments": [],
+//     "feedback": []
+// }
+// ]

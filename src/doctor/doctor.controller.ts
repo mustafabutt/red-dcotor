@@ -8,7 +8,8 @@ import {
     Post,
     Put,
     Res,
-    UseGuards
+    UseGuards,
+    Query
   } from '@nestjs/common';
 import { Exceptions } from '../exceptions/exceptions';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -46,10 +47,11 @@ export class DoctorController {
     }
 
     @Get()
-    async fetchAll(@Res() response) {
+    async fetchAll(@Res() response, @Query() query) {
       try {
+      
         // setTimeout(async ()=>{
-          const data = await this.doctorService.readDoctors();
+          const data = await this.doctorService.readDoctors(query);
       
           return response.status(HttpStatus.OK).json(
             data
@@ -61,9 +63,9 @@ export class DoctorController {
       }
     }
     @Get('/:id' )
-    async findById(@Res() response, @Param('id') id) {
+    async findById(@Res() response, @Param('id') id, @Query() query) {
       try {
-        const location = await this.doctorService.readSingleDoctor(id);
+        const location = await this.doctorService.readSingleDoctor(id, query);
         return response.status(HttpStatus.OK).json(
             location,
         );

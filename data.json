@@ -1,0 +1,84 @@
+// appointments
+{
+    "_id" : ObjectId("66c2418e564a96898773a00a"),
+    "doctors" : [
+        {
+            "doctorIDs" : "66b00189588327dd821b0872",
+            "date" : "12/12/2024"
+        }
+    ],
+    "user" : "66af73680ada9c1f7894f96e",
+    "__v" : NumberInt(0)
+}
+
+// doctor
+
+{
+    "_id" : ObjectId("66dee416c29e567261d0ffc8"),
+    "firstName" : "idrees",
+    "lastName" : "khan",
+    "email" : "amir@gmail.com",
+    "age" : NumberInt(55),
+    "fees" : NumberInt(2000),
+    "expertise" : "Idrees Specialist",
+    "qualification" : "MBBS (GOLD MEDALIST)",
+    "waitTime" : "2 hours",
+    "doctorTiming" : [
+        {
+            "location" : "66af7c90a7b794e0b04e01b1",
+            "timing" : [
+                {
+                    "day" : "2024-09-22",
+                    "start_time" : "09:00:00",
+                    "end_time" : "13:00:00"
+                }
+            ]
+        }
+    ],
+    "appointments" : [
+        "66c2418e564a96898773a00a"
+    ],
+    "feedback" : [
+        "66c09c5690b4c7a2582b7960"
+    ],
+    "__v" : NumberInt(0)
+}
+
+// feedbacks
+
+{
+    "_id" : ObjectId("66c09c5690b4c7a2582b7960"),
+    "comments" : "highly recomended plus+",
+    "rating" : "5",
+    "doctor" : "66b00189588327dd821b0872",
+    "__v" : NumberInt(0)
+}
+
+// locations
+
+{
+    "_id" : ObjectId("66af7c90a7b794e0b04e01b1"),
+    "city" : "sialkot",
+    "streat" : "cant",
+    "postCode" : "51310",
+    "hospital" : "kiran international",
+    "doctors" : [
+        "66b00189588327dd821b0872"
+    ],
+    "__v" : NumberInt(0)
+}
+
+// users 
+
+{
+    "_id" : ObjectId("66af73680ada9c1f7894f96e"),
+    "email" : "test@gmail.com",
+    "password" : "$2b$10$NFr5O/Y4aQiJPTDuxzqh6et7fPMQjs2fJyQISxGP8KYK3A1uAIlqy",
+    "gender" : "male",
+    "role" : "admin",
+    "appointments" : [
+        "66c2418e564a96898773a00a"
+    ],
+    "createdBy" : "test@gmail.com",
+    "__v" : NumberInt(0)
+}

@@ -2,8 +2,10 @@ import { cookies } from "next/headers";
 import axios from "axios";
 
 export async function GET(request: Request, { params }) {
-   
-    const res = await fetch(`http://localhost:3001/doctor/${params.doctor}`, {
+    const reqUrl = request.url
+    const { searchParams } = new URL(reqUrl)
+  
+    const res = await fetch(`http://localhost:3001/doctor/${params.doctor}?city=`+searchParams.get("city"), {
         method: 'GET',
         headers: {
             "Content-Type": "application/json",

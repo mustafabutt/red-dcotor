@@ -17,10 +17,10 @@ class TimeSlots{
 
 @Schema()
 class DoctorLocations{
-  @Prop({ type: [String],ref: 'Location' })
-  locations: Location[]
+  @Prop({ type: String,ref: 'Location' })
+  location: Location
   @Prop({ required: true})
-  timing: TimeSlots
+  timing: TimeSlots[]
 }
 
 @Schema()
@@ -49,8 +49,8 @@ export class Doctor {
   @Prop({ required: true })
   waitTime: string;
 
-  @Prop({ required: true, ref: 'Location' })
-  doctorTiming: [{location:Location}];
+  @Prop({ required: true, ref: 'Location'}, )
+  doctorTiming: [{location:DoctorLocations}];
 
   @Prop({ type: [String],ref: 'Appointment' })
   appointments: Appointment[]

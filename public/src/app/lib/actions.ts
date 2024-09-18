@@ -24,8 +24,8 @@ export async function authenticate(_currentState: unknown, formData: FormData) {
   }
 }
 
-export async function fetchDoctorList() {
-  const res = await fetch("http://localhost:3001/doctor", {
+export async function fetchDoctorList(location) {
+  const res = await fetch("http://localhost:3001/doctor/?city="+location, {
       method: 'GET',
       headers: {
           "Content-Type": "application/json",

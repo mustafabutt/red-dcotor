@@ -22,9 +22,9 @@ export default function RootLayout({
           <ThemeProvider>
               <Header />
                 {children}
-                {appointment}
+                {/* {appointment}
                 {location}
-                {doctor}
+                {doctor} */}
               <Footer />
           </ThemeProvider>
         </NextAuthProvider>

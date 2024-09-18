@@ -15,8 +15,9 @@ export default function TabsUI({ params }: { params: { slug: string } }) {
 
     if(!data)
         return null
+        
     return (
-        <div className="flex w-full flex-col">
+        <div className="flex w-full flex-col ">
             <Tabs aria-label="Options" variant="bordered">
                 <Tab key="info" title={
                 <div className="flex items-center space-x-2">

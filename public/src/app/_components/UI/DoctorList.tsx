@@ -11,7 +11,7 @@ export default async function DoctorList({ params, searchParams, request }) {
     const pathname = usePathname()    
    
     const handleId = (e) => {
-        setCurrentDoctorId(e.target.id)
+        setCurrentDoctorId(e.target.id);
     }
 
     return (

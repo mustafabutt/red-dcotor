@@ -5,7 +5,8 @@ import { getToken } from "next-auth/jwt";
 
 const protectedRoutes = [
   'doctor',
-  'location'
+  'location',
+  'checkout'
 ];
 const unprotectedRoutes = ['/signin'];
 export async function middleware(request: NextRequest,response: NextResponse) {
@@ -19,6 +20,7 @@ export async function middleware(request: NextRequest,response: NextResponse) {
   const isProtectedRoute = protectedRoutes.some((prefix) =>
     request.nextUrl.pathname.includes(prefix)
   );
+  
   if(request.cookies.get('access_token')?.value != undefined || request.cookies.get('access_token')?.value != null)
     token = request.cookies.get('access_token')?.value;
   else token = request.cookies.get('next-auth.session-token')?.value;

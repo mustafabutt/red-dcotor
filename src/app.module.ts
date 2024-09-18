@@ -24,7 +24,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 import { configuration } from '../config/configuration';
 import { DoctorModule } from './doctor/doctor.module';
-
+import { StripeModule } from './stripe/stripe.module';
 
 @Module({
   imports: [
@@ -43,7 +43,7 @@ import { DoctorModule } from './doctor/doctor.module';
       signOptions: { expiresIn: "60s" },
     }),
     DoctorModule,
-    
+    StripeModule
   ],
   controllers: [AppController, UserController, MailController],
   providers: [AppService, UsersService, Exceptions, SendgridService,ConfigService],
